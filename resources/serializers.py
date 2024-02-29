@@ -12,12 +12,7 @@ from .models import (
 )
 
 
-class PeopleSerializer(serializers.HyperlinkedModelSerializer):
-
-    homeworld = serializers.HyperlinkedRelatedField(
-        read_only=True,
-        view_name="planet-detail"
-    )
+class PeopleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = People
@@ -41,7 +36,7 @@ class PeopleSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class PlanetSerializer(serializers.HyperlinkedModelSerializer):
+class PlanetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Planet
@@ -63,7 +58,7 @@ class PlanetSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class FilmSerializer(serializers.HyperlinkedModelSerializer):
+class FilmSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Film
@@ -85,12 +80,7 @@ class FilmSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class SpeciesSerializer(serializers.HyperlinkedModelSerializer):
-
-    homeworld = serializers.HyperlinkedRelatedField(
-        read_only=True,
-        view_name='planet-detail'
-    )
+class SpeciesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Species
@@ -113,13 +103,7 @@ class SpeciesSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class VehicleSerializer(serializers.HyperlinkedModelSerializer):
-
-    pilots = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name='people-detail'
-    )
+class VehicleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Vehicle
@@ -143,13 +127,7 @@ class VehicleSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class StarshipSerializer(serializers.HyperlinkedModelSerializer):
-
-    pilots = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name="people-detail"
-    )
+class StarshipSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Starship
