@@ -80,27 +80,6 @@ https://swapi.dev/api/people/?search=r2
 
  All searches will use case-insensitive partial matches on the set of search fields. To see the set of search fields for each resource, check out the individual resource documentation. For more information on advanced search terms see [here](http://www.django-rest-framework.org/api-guide/filtering/#searchfilter).
 
-#Encodings
-- - -
-
-SWAPI provides two encodings for you to render the data with:
-
-<a name="json"></a>
-###JSON
-
-JSON is the standard data format provided by SWAPI by default.
-
-<a name="wookiee"></a>
-###Wookiee
-
-Wookiee is for our tall hairy allies who speak Wookiee, this encoding is identical to JSON except with wookiee translations.
-
-Using the wookiee renderer is easy, just append `?format=wookiee` to your urls:
-
-```
-https://swapi.dev/api/planets/1/?format=wookiee
-```
-
 #Resources
 - - -
 
