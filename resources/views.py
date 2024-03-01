@@ -22,9 +22,9 @@ from .serializers import (
 
 
 class PeopleViewSet(viewsets.ReadOnlyModelViewSet):
-
     queryset = People.objects.all()
     serializer_class = PeopleSerializer
+    filter_fields = '__all__'
     search_fields = ('name',)
 
     def retrieve(self, request, *args, **kwargs):
@@ -38,6 +38,7 @@ class PlanetViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Planet.objects.all()
     serializer_class = PlanetSerializer
+    filter_fields = '__all__'
     search_fields = ('name',)
 
     def retrieve(self, request, *args, **kwargs):
@@ -51,6 +52,7 @@ class FilmViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Film.objects.all()
     serializer_class = FilmSerializer
+    filter_fields = '__all__'
     search_fields = ('title',)
 
     def retrieve(self, request, *args, **kwargs):
@@ -64,6 +66,7 @@ class SpeciesViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Species.objects.all()
     serializer_class = SpeciesSerializer
+    filter_fields = '__all__'
     search_fields = ('name',)
 
     def retrieve(self, request, *args, **kwargs):
@@ -77,6 +80,7 @@ class VehicleViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
+    filter_fields = '__all__'
     search_fields = ('name','model',)
 
     def retrieve(self, request, *args, **kwargs):
@@ -90,6 +94,7 @@ class StarshipViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Starship.objects.all()
     serializer_class = StarshipSerializer
+    filter_fields = '__all__'
     search_fields = ('name','model',)
 
     def retrieve(self, request, *args, **kwargs):

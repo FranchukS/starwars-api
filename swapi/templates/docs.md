@@ -5,7 +5,7 @@
 ###Introduction
 
 
-Welcome to the swapi, the Star Wars API! This documentation should help you familiarise yourself with the resources available and how to consume them with HTTP requests. If you're after a native helper library then I suggest you scroll down and check out what's available. Read through the getting started section before you dive in. Most of your problems should be solved just by reading through it.
+Welcome to the swapi, the Star Wars API! This documentation should help you familiarise yourself with the resources available and how to consume them with HTTP requests. Read through the getting started section before you dive in. Most of your problems should be solved just by reading through it.
 
 <a name="start"></a>
 ###Getting started
@@ -15,7 +15,7 @@ Let's make our first API request to the Star Wars API!
 
 Open up a terminal and use [curl](http://curl.haxx.se) or [httpie](http://httpie.org) to make an API request for a resource. In the example below, we're trying to get the first planet, Tatooine:
 
-    http swapi.dev/api/planets/1/
+    http sw-api.starnavi.io/planets/1/
 
 We'll use [httpie](http://httpie.org) for our examples as it displays responses nicely and gives us a whole lot more useful information. If you don't want to download httpie, just use the *curl* command instead.
 
@@ -31,14 +31,14 @@ Here is the response we get:
         "orbital_period": "304",
         "population": "200000",
         "residents": [
-            "https://swapi.dev/api/people/1/",
-            "https://swapi.dev/api/people/2/",
+            1,
+            2,
             ...
         ],
         "rotation_period": "23",
         "surface_water": "1",
         "terrain": "Dessert",
-        "url": "https://swapi.dev/api/planets/1/"
+        "url": "https://sw-api.starnavi.io/planets/1/"
     }
 
 If your response looks slightly different don't panic. This is probably because more data has been added to swapi since we made this documentation.
@@ -50,7 +50,7 @@ The **Base URL** is the root URL for all of the API, if you ever make a request 
 
 The Base URL for swapi is:
 
-    https://swapi.dev/api/
+    https://sw-api.starnavi.io/
 
 The documentation below assumes you are prepending the Base URL to the endpoints in order to make requests.
 
@@ -75,31 +75,67 @@ All resources support [JSON Schema](https://jsonschema.net). Making a request to
 All resources support a `search` parameter that filters the set of resources returned.  This allows you to make queries like:
 
 ```
-https://swapi.dev/api/people/?search=r2
+https://sw-api.starnavi.io/people/?search=r2
 ```
 
  All searches will use case-insensitive partial matches on the set of search fields. To see the set of search fields for each resource, check out the individual resource documentation. For more information on advanced search terms see [here](http://www.django-rest-framework.org/api-guide/filtering/#searchfilter).
 
-#Encodings
-- - -
+<a name="filter"></a>
+###Filtering
 
-SWAPI provides two encodings for you to render the data with:
+The API supports advanced filtering options that allow precise data retrieval. Filters are appended as query parameters to the URL, enabling specific, range-based, partial, and negated matches. This functionality is powered by Django URL Filter, providing flexibility and security.
 
-<a name="json"></a>
-###JSON
+**Example request:**
 
-JSON is the standard data format provided by SWAPI by default.
+    https://sw-api.starnavi.io/species/?name=human
 
-<a name="wookiee"></a>
-###Wookiee
+**Filtering Options:**
 
-Wookiee is for our tall hairy allies who speak Wookiee, this encoding is identical to JSON except with wookiee translations.
+- **Basic Filtering** - Append the attribute and value:
 
-Using the wookiee renderer is easy, just append `?format=wookiee` to your urls:
+        /species/?name=human
 
-```
-https://swapi.dev/api/planets/1/?format=wookiee
-```
+- **Partial Matches** - Use `__contains` for substring matches:
+
+        /species/?name__contains=wook
+
+- **Range Queries** - Use `__range` for specifying a range (inclusive):
+
+        /planets/?population__range=100000,1000000
+
+- **Negations** - Add `!=` after the filter to exclude matching results:
+
+        /planets/?climate__contains!=arid
+
+- **List Filters** - Use `__in` to filter by multiple values:
+
+        /planets/?terrain__in=forest,jungle
+
+- **Filtering on Related Models** - Filter attributes of related models:
+
+        /films/?species=3
+
+- **Combining Filters** - Combine multiple filters in a single query:
+
+        /planets/?climate=arid&population__gt=100000
+
+        /starships/?films__in=1,4&pilots__homeworld__name__iexact=naboo
+- 
+**Attributes:**
+
+- ```climate``` *string*
+-- The field name you want to filter on.
+- ```__contains``` *string*
+-- A substring to match within the attribute value.
+- ```__range``` *string*
+-- A start and end value for range queries, separated by a comma.
+- ```!=``` *string*
+-- Used after a filter to negate the query.
+- ```__in``` *string*
+-- Multiple values for the attribute, separated by commas.
+
+
+Filters can be combined in a single request to narrow down the filter results efficiently. Ensure query parameters are correctly encoded to avoid errors.
 
 #Resources
 - - -
@@ -111,19 +147,19 @@ The Root resource provides information on all available resources within the API
 
 **Example request:**
 
-    http https://swapi.dev/api/
+    http https://sw-api.starnavi.io/
 
 **Example response:**
 
     HTTP/1.0 200 OK
     Content-Type: application/json
     {
-        "films": "https://swapi.dev/api/films/",
-        "people": "https://swapi.dev/api/people/",
-        "planets": "https://swapi.dev/api/planets/",
-        "species": "https://swapi.dev/api/species/",
-        "starships": "https://swapi.dev/api/starships/",
-        "vehicles": "https://swapi.dev/api/vehicles/"
+        "films": "https://sw-api.starnavi.io/films/",
+        "people": "https://sw-api.starnavi.io/people/",
+        "planets": "https://sw-api.starnavi.io/planets/",
+        "species": "https://sw-api.starnavi.io/species/",
+        "starships": "https://sw-api.starnavi.io/starships/",
+        "vehicles": "https://sw-api.starnavi.io/vehicles/"
     }
 
 **Attributes:**
@@ -156,7 +192,7 @@ A People resource is an individual person or character within the Star Wars univ
 
 **Example request:**
 
-    http https://swapi.dev/api/people/1/
+    http https://sw-api.starnavi.io/people/1/
 
 **Example response:**
 
@@ -166,28 +202,28 @@ A People resource is an individual person or character within the Star Wars univ
         "birth_year": "19 BBY",
         "eye_color": "Blue",
         "films": [
-            "https://swapi.dev/api/films/1/",
+            1,
             ...
         ],
         "gender": "Male",
         "hair_color": "Blond",
         "height": "172",
-        "homeworld": "https://swapi.dev/api/planets/1/",
+        "homeworld": 1,
         "mass": "77",
         "name": "Luke Skywalker",
         "skin_color": "Fair",
         "created": "2014-12-09T13:50:51.644000Z",
         "edited": "2014-12-10T13:52:43.172000Z",
         "species": [
-            "https://swapi.dev/api/species/1/"
+            1
         ],
         "starships": [
-            "https://swapi.dev/api/starships/12/",
+            12,
             ...
         ],
-        "url": "https://swapi.dev/api/people/1/",
+        "url": "https://sw-api.starnavi.io/people/1/",
         "vehicles": [
-            "https://swapi.dev/api/vehicles/14/"
+            14
             ...
         ]
     }
@@ -245,7 +281,7 @@ A Film resource is a single film.
 
 **Example request:**
 
-    http https://swapi.dev/api/films/1/
+    http https://sw-api.starnavi.io/films/1/
 
 **Example response:**
 
@@ -253,7 +289,7 @@ A Film resource is a single film.
     Content-Type: application/json
     {
         "characters": [
-            "https://swapi.dev/api/people/1/",
+            1,
             ...
         ],
         "created": "2014-12-10T14:23:31.880000Z",
@@ -262,23 +298,23 @@ A Film resource is a single film.
         "episode_id": 4,
         "opening_crawl": "It is a period of civil war.\n\nRebel spaceships, striking\n\nfrom a hidden base, have won\n\ntheir first victory against\n\nthe evil Galactic Empire.\n\n\n\nDuring the battle, Rebel\n\nspies managed to steal secret\r\nplans to the Empire's\n\nultimate weapon, the DEATH\n\nSTAR, an armored space\n\nstation with enough power\n\nto destroy an entire planet.\n\n\n\nPursued by the Empire's\n\nsinister agents, Princess\n\nLeia races home aboard her\n\nstarship, custodian of the\n\nstolen plans that can save her\n\npeople and restore\n\nfreedom to the galaxy....",
         "planets": [
-            "https://swapi.dev/api/planets/1/",
+            1,
             ...
         ],
         "producer": "Gary Kurtz, Rick McCallum",
         "release_date": "1977-05-25",
         "species": [
-            "https://swapi.dev/api/species/1/",
+            1,
             ...
         ],
         "starships": [
-            "https://swapi.dev/api/starships/2/",
+            2,
             ...
         ],
         "title": "A New Hope",
-        "url": "https://swapi.dev/api/films/1/",
+        "url": "https://sw-api.starnavi.io/films/1/",
         "vehicles": [
-            "https://swapi.dev/api/vehicles/4/",
+            4,
             ...
         ]
     }
@@ -332,7 +368,7 @@ A Starship resource is a single transport craft that has hyperdrive capability.
 
 **Example request:**
 
-    http https://swapi.dev/api/starships/9/
+    http https://sw-api.starnavi.io/starships/9/
 
 **Example response:**
 
@@ -354,11 +390,11 @@ A Starship resource is a single transport craft that has hyperdrive capability.
         "name": "Death Star",
         "passengers": "843342",
         "films": [
-            "https://swapi.dev/api/films/1/"
+            1
         ],
         "pilots": [],
         "starship_class": "Deep Space Mobile Battlestation",
-        "url": "https://swapi.dev/api/starships/9/"
+        "url": "https://sw-api.starnavi.io/starships/9/"
     }
 
 **Attributes:**
@@ -419,7 +455,7 @@ A Vehicle resource is a single transport craft that **does not have** hyperdrive
 
 **Example request:**
 
-    http https://swapi.dev/api/vehicles/4/
+    http https://sw-api.starnavi.io/vehicles/4/
 
 **Example response:**
 
@@ -441,9 +477,9 @@ A Vehicle resource is a single transport craft that **does not have** hyperdrive
         "passengers": "30",
         "pilots": [],
         "films": [
-            "https://swapi.dev/api/films/1/"
+            1
         ],
-        "url": "https://swapi.dev/api/vehicles/4/",
+        "url": "https://sw-api.starnavi.io/vehicles/4/",
         "vehicle_class": "wheeled"
     }
 
@@ -501,7 +537,7 @@ A Species resource is a type of person or character within the Star Wars Univers
 
 **Example request:**
 
-    http https://swapi.dev/api/species/3/
+    http https://sw-api.starnavi.io/species/3/
 
 **Example response:**
 
@@ -517,18 +553,18 @@ A Species resource is a type of person or character within the Star Wars Univers
         "edited": "2014-12-10T16:44:31.486000Z",
         "eye_colors": "blue, green, yellow, brown, golden, red",
         "hair_colors": "black, brown",
-        "homeworld": "https://swapi.dev/api/planets/14/",
+        "homeworld": 14,
         "language": "Shyriiwook",
         "name": "Wookie",
         "people": [
-            "https://swapi.dev/api/people/13/"
+            13"
         ],
         "films": [
-            "https://swapi.dev/api/films/1/",
-            "https://swapi.dev/api/films/2/"
+            1,
+            2
         ],
         "skin_colors": "gray",
-        "url": "https://swapi.dev/api/species/3/"
+        "url": "https://sw-api.starnavi.io/species/3/"
     }
 
 **Attributes:**
@@ -582,7 +618,7 @@ A Planet resource is a large mass, planet or planetoid in the Star Wars Universe
 
 **Example request:**
 
-    http https://swapi.dev/api/planets/1/
+    http https://sw-api.starnavi.io/planets/1/
 
 **Example response:**
 
@@ -595,7 +631,7 @@ A Planet resource is a large mass, planet or planetoid in the Star Wars Universe
         "diameter": "10465",
         "edited": "2014-12-15T13:48:16.167217Z",
         "films": [
-            "https://swapi.dev/api/films/1/",
+            1,
             ...
         ],
         "gravity": "1",
@@ -603,13 +639,13 @@ A Planet resource is a large mass, planet or planetoid in the Star Wars Universe
         "orbital_period": "304",
         "population": "120000",
         "residents": [
-            "https://swapi.dev/api/people/1/",
+            1,
             ...
         ],
         "rotation_period": "23",
         "surface_water": "1",
         "terrain": "Dessert",
-        "url": "https://swapi.dev/api/planets/1/"
+        "url": "https://sw-api.starnavi.io/planets/1/"
     }
 
 **Attributes:**
@@ -646,93 +682,3 @@ A Planet resource is a large mass, planet or planetoid in the Star Wars Universe
 **Search Fields:**
 
 - ```name```
-
-#Helper libraries
-- - -
-
-There are a bunch of helper libraries available for consuming the Star Wars API in a native programming language.
-
-![helper_library_gif](http://i.imgur.com/l02u363.gif)
-
-<a name="python"></a>
-##Python
-
-- [swapi-python](https://github.com/phalt/swapi-python) is built by the author of swapi, Paul Hallett.
-
-<a name="javascript"></a>
-##Javascript
-
-- [SWAPI-Wrapper](https://github.com/cfjedimaster/SWAPI-Wrapper) By [Raymond Camden](https://github.com/cfjedimaster).
-- [swapi-node](https://www.npmjs.com/package/swapi-node) by [Lucas Holmquist](https://github.com/lholmquist).
-
-<a name="typescript"></a>
-##Typescript
-
-- [swapi-ts](https://github.com/amitmtrn/swapi-ts) by [Amit Choukroun](https://github.com/amitmtrn)
-
-<a name="android"></a>
-##Android
-
-- [SWAPI-Android-SDK](https://github.com/Oleur/SWAPI-Android-SDK) by [Julien Salvi](https://github.com/Oleur).
-
-<a name="java"></a>
-##Java
-
-- [SWAPI](https://github.com/maartendekker1998/StarWarsAPI) by [Maarten Dekker](https://github.com/maartendekker1998).
-
-<a name="golang"></a>
-##Go
-
-- [swapi-go](https://github.com/peterhellberg/swapi) by [Peter Hellberg](https://github.com/peterhellberg).
-- [swapi](https://github.com/leejarvis/swapi) by [Lee Jarvis](https://github.com/leejarvis).
-
-<a name="php"></a>
-##PHP
-
-- [Coruscant](https://github.com/DraperStudio/Coruscant) by [DraperStudio](https://github.com/DraperStudio).
-- [swapi-php](https://github.com/rmasters/swapi-php) by [Ross Masters](https://github.com/rmasters).
-
-<a name="ruby"></a>
-##Ruby
-
-- [swapi-ruby](https://github.com/emaraschio/swapi-ruby) by [Ezequiel Maraschio](https://github.com/emaraschio).
-- [Tatooine](https://github.com/philnash/tatooine) by [Phil Nash](https://github.com/philnash).
-- [swgem](https://github.com/igordcsouza/swgem) by [Igor Souza](https://github.com/igordcsouza).
-
-<a name="csharp"></a>
-##C Sharp
-
-- [SharpTrooper](https://github.com/olcay/SharpTrooper) by [Olcay Bayram](https://github.com/olcay).
-- [SWapiCSharp](https://github.com/M-Yankov/SWapi-CSharp) by [M-Yankov](https://github.com/M-Yankov/)
-
-<a name="objc"></a>
-##Objective C
-
-- [Falcon](https://github.com/njdehoog/Falcon) by [Niels de Hoog](https://github.com/njdehoog).
-
-<a name="angular"></a>
-##Angular
-
-- [xyz-angular-swapi](https://github.com/unshift-devs/xyz-angular-swapi) by [Matteo Ronchi](https://github.com/cef62).
-- [ne-swapi](https://github.com/nickescallon/ne-swapi) by [Nick Escallon](https://github.com/nickescallon).
-
-<a name="angular2"></a>
-##Angular 2
-
-- [ng2-swapi](https://github.com/giammaleoni/ng2-swapi) by [Gianmaria Leoni](https://github.com/giammaleoni).
-
-<a name="r"></a>
-##R
-
-- [rwars](https://github.com/Ironholds/rwars) by [Oliver Keyes](https://github.com/ironholds).
-
-<a name="fsharp"></a>
-## F# #
-
-- [fsharp-swapi](https://github.com/evelinag/fsharp-swapi) by [Evelina Gabasova](http://evelinag.com/).
-
-## Elixir
-
-- [swapi.ex](https://github.com/twhitacre/swapi.ex) by [Tim Whitacre](http://timw.co/).
-- [ex_swapi](https://github.com/mrkjlchvz/ex_swapi) by [Mark Chavez](http://markjoelchavez.com).
-- [elixir-swapi](https://github.com/kylesurowiec/swapi-elixir) by [Kyle Surowiec](https://github.com/kylesurowiec).

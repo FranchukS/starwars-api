@@ -1,0 +1,39 @@
+version: "3.7"
+
+services:
+  django:
+    container_name: swapi_django
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: [ "bash", "run.sh" ]
+    volumes:
+      - ./:/code/
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  db:
+    container_name: swapi_db
+    image: postgres:13.4-alpine
+    restart: always
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+    environment:
+      - RUN_TYPE=development
+      - DEBUG=True
+    ports:
+      - "5434:5432"
+    env_file:
+      - .env
+
+
+networks:
+  default:
+    name: swapi
+
+volumes:
+  db_data:
