@@ -127,6 +127,7 @@ REST_FRAMEWORK = {
         'anon': '10000/day',
     },
     'DEFAULT_FILTER_BACKENDS': (
+        'url_filter.integrations.drf.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
     )
 }
