@@ -14,31 +14,18 @@ DEFAULT_HITS = 50000
 
 
 def index(request):
-
-    stripe_key = settings.STRIPE_KEYS['publishable']
+    data = cache.get('resource_data')
+    if not data:
+        data = get_resource_stats()
+        cache.set('resource_data', data, 10000)
     return render_to_response(
         'index.html',
-        {
-            "stripe_key": stripe_key
-        }
+        data
     )
 
 
 def documentation(request):
     return render_to_response("documentation.html")
-
-
-def about(request):
-    stripe_key = settings.STRIPE_KEYS['publishable']
-    data = cache.get('resource_data')
-    if not data:
-        data = get_resource_stats()
-        cache.set('resource_data', data, 10000)
-    data['stripe_key'] = stripe_key
-    return render_to_response(
-        "about.html",
-        data
-    )
 
 
 @csrf_exempt
