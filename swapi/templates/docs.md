@@ -119,6 +119,8 @@ The API supports advanced filtering options that allow precise data retrieval. F
 
         /planets/?climate=arid&population__gt=100000
 
+        /starships/?films__in=1,4&pilots__homeworld__name__iexact=naboo
+- 
 **Attributes:**
 
 - ```climate``` *string*
